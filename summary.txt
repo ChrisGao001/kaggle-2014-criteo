@@ -1,0 +1,14 @@
+解决方案：
+gbdt + ffm
+
+特征工程：
+1. 数值特征通过（log(value))^2离散化
+2. 类别特征低频特殊编码
+3. 稠密特征（数值和高频类别特征值)通过gbdt抽取特征
+4. hash trick （1e6)
+
+编程技巧：
+1. 并行化处理
+2. argparser
+3. collection.defaultdict(lambda:[0,0,0])
+4. csv.DictReader处理文本数据

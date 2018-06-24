@@ -2,6 +2,7 @@ import hashlib, csv, math, os, pickle, subprocess
 
 HEADER="Id,Label,I1,I2,I3,I4,I5,I6,I7,I8,I9,I10,I11,I12,I13,C1,C2,C3,C4,C5,C6,C7,C8,C9,C10,C11,C12,C13,C14,C15,C16,C17,C18,C19,C20,C21,C22,C23,C24,C25,C26"
 
+
 def open_with_first_line_skipped(path, skip=True):
     f = open(path)
     if not skip:
@@ -9,11 +10,14 @@ def open_with_first_line_skipped(path, skip=True):
     next(f)
     return f
 
+# hash trick
 def hashstr(str, nr_bins):
     return int(hashlib.md5(str.encode('utf8')).hexdigest(), 16)%(nr_bins-1)+1
 
 def gen_feats(row):
     feats = []
+	# process numerical feature
+	# 数值特征离散化(log(value))^2
     for j in range(1, 14):
         field = 'I{0}'.format(j)
         value = row[field]
@@ -25,6 +29,8 @@ def gen_feats(row):
                 value = 'SP'+str(value)
         key = field + '-' + str(value)
         feats.append(key)
+
+	# process category feature
     for j in range(1, 27):
         field = 'C{0}'.format(j)
         value = row[field]
@@ -32,6 +38,7 @@ def gen_feats(row):
         feats.append(key)
     return feats
 
+# 过滤低频特征
 def read_freqent_feats(threshold=10):
     frequent_feats = set()
     for row in csv.DictReader(open('fc.trva.t10.txt')):
@@ -40,6 +47,7 @@ def read_freqent_feats(threshold=10):
         frequent_feats.add(row['Field']+'-'+row['Value'])
     return frequent_feats
 
+# 并行化处理分割文件
 def split(path, nr_thread, has_header):
 
     def open_with_header_witten(path, idx, header):
@@ -70,6 +78,7 @@ def split(path, nr_thread, has_header):
         f.write(line)
     f.close()
 
+# 并行化执行命令
 def parallel_convert(cvt_path, arg_paths, nr_thread):
 
     workers = []

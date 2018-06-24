@@ -7,10 +7,12 @@ from common import *
 if len(sys.argv) == 1:
     sys.argv.append('-h')
 
+# 命令行解析库
 parser = argparse.ArgumentParser()
 parser.add_argument('csv_path', type=str)
 args = vars(parser.parse_args())
 
+# 统计类别特征值频数
 counts = collections.defaultdict(lambda : [0, 0, 0])
 
 for i, row in enumerate(csv.DictReader(open(args['csv_path'])), start=1):

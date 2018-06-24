@@ -21,6 +21,7 @@ with open(args['dense_path'], 'w') as f_d, open(args['sparse_path'], 'w') as f_s
         feats = []
         for j in range(1, 14):
             val = row['I{0}'.format(j)]
+			# 缺失值处理
             if val == '':
                 val = -10 
             feats.append('{0}'.format(val))
